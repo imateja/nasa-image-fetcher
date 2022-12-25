@@ -1,0 +1,78 @@
+service: nasa-image-fetcher
+
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action: 's3:*'
+          Resource: '*'
+        - Effect: Allow
+          Action: 'dynamodb:*'
+          Resource: '*'
+        - Effect: Allow
+          Action: 'sqs:*'
+          Resource: '*'
+        - Effect: Allow
+          Action: 'cloudformation:*'
+          Resource: '*'
+        - Effect: Allow
+          Action: 'cloudwatch:*'
+          Resource: '*'
+        - Effect: Allow
+          Action: 'ses:*'
+          Resource: '*'
+
+functions:
+
+  hello:
+    handler: handler.hello
+
+  fetchimg:
+    handler: functions/fetchimg.fetchimg
+    events:
+      - schedule: cron(0 12 * * ? *)
+    environment:
+      NASA_API_KEY: your_api_key
+      TABLE_NAME: table
+
+  bucketinsert:
+    handler: functions/bucketinsert.bucketinsert
+    environment:
+      BUCKET_NAME: bucket
+
+  addcolumn:
+    handler: functions/addcolumn.addcolumn
+    events:
+      - s3: 
+          bucket: nasa-image-bucket
+          event: s3:ObjectCreated:*
+          existing: true 
+    environment: 
+      TABLE_NAME: table
+      BUCKET_NAME: bucket
+
+  sqsend:
+    handler: functions/sqsend.sqsend
+    environment:
+      TABLE_NAME: table
+      QUEUE_URL: your_queue_url
+
+  sqsreceive:
+    handler: functions/sqsreceive.sqsreceive
+    events:
+      - sqs: sqs_arn
+    environment: 
+      QUEUE_URL: your_queue_url
+      EMAIL: your@email.com
+      
+  endpoint:
+    handler: functions/endpoint.endpoint
+    environment:
+      TABLE_NAME: nasa-images
+    
+  
