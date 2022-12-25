@@ -25,7 +25,7 @@ The code is composed out of 6 Lambda functions that do all the work.
 All of them are located in the functions/ folder.
 | Function | Usage |
 | ------ | ------ |
-| [fetchImage](https://github.com/yazecchi/nasa-image-fetcher/blob/main/functions/fetchimage.js) | use axios to get image data and insert into dynamoDB |
+| [fetchImage](https://github.com/yazecchi/nasa-image-fetcher/blob/main/functions/fetchimg.js) | use axios to get image data and insert into dynamoDB |
 | [bucketInsert](https://github.com/yazecchi/nasa-image-fetcher/blob/main/functions/bucketinsert.js) | get dynamoDB record and create s3 bucket object |
 | [addColumn](https://github.com/yazecchi/nasa-image-fetcher/blob/main/functions/addcolumn.js) | get new s3 bucket object, create presigned url and update dynamoDB record |
 | [sqSend](https://github.com/yazecchi/nasa-image-fetcher/blob/main/functions/sqsend.js) | get dynamoDB record and send it to sqs queue |
